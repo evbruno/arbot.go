@@ -31,7 +31,7 @@ var (
 
 // PairMetaData contains all meta data concerning the Pair contract.
 var PairMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[],\"name\":\"getReserves\",\"outputs\":[{\"internalType\":\"uint112\",\"name\":\"reserve0\",\"type\":\"uint112\"},{\"internalType\":\"uint112\",\"name\":\"reserve1\",\"type\":\"uint112\"},{\"internalType\":\"uint32\",\"name\":\"blockTimestampLast\",\"type\":\"uint32\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[],\"name\":\"getReserves\",\"outputs\":[{\"internalType\":\"uint112\",\"name\":\"reserve0\",\"type\":\"uint112\"},{\"internalType\":\"uint112\",\"name\":\"reserve1\",\"type\":\"uint112\"},{\"internalType\":\"uint32\",\"name\":\"blockTimestampLast\",\"type\":\"uint32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"token0\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"token1\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
 }
 
 // PairABI is the input ABI used to generate the binding from.
@@ -228,4 +228,66 @@ func (_Pair *PairCallerSession) GetReserves() (struct {
 	BlockTimestampLast uint32
 }, error) {
 	return _Pair.Contract.GetReserves(&_Pair.CallOpts)
+}
+
+// Token0 is a free data retrieval call binding the contract method 0x0dfe1681.
+//
+// Solidity: function token0() view returns(address)
+func (_Pair *PairCaller) Token0(opts *bind.CallOpts) (common.Address, error) {
+	var out []interface{}
+	err := _Pair.contract.Call(opts, &out, "token0")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// Token0 is a free data retrieval call binding the contract method 0x0dfe1681.
+//
+// Solidity: function token0() view returns(address)
+func (_Pair *PairSession) Token0() (common.Address, error) {
+	return _Pair.Contract.Token0(&_Pair.CallOpts)
+}
+
+// Token0 is a free data retrieval call binding the contract method 0x0dfe1681.
+//
+// Solidity: function token0() view returns(address)
+func (_Pair *PairCallerSession) Token0() (common.Address, error) {
+	return _Pair.Contract.Token0(&_Pair.CallOpts)
+}
+
+// Token1 is a free data retrieval call binding the contract method 0xd21220a7.
+//
+// Solidity: function token1() view returns(address)
+func (_Pair *PairCaller) Token1(opts *bind.CallOpts) (common.Address, error) {
+	var out []interface{}
+	err := _Pair.contract.Call(opts, &out, "token1")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// Token1 is a free data retrieval call binding the contract method 0xd21220a7.
+//
+// Solidity: function token1() view returns(address)
+func (_Pair *PairSession) Token1() (common.Address, error) {
+	return _Pair.Contract.Token1(&_Pair.CallOpts)
+}
+
+// Token1 is a free data retrieval call binding the contract method 0xd21220a7.
+//
+// Solidity: function token1() view returns(address)
+func (_Pair *PairCallerSession) Token1() (common.Address, error) {
+	return _Pair.Contract.Token1(&_Pair.CallOpts)
 }
