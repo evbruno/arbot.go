@@ -8,7 +8,9 @@ import (
 	"log/slog"
 	"math/big"
 	"os"
+	"slices"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -41,11 +43,9 @@ type PairInfo struct {
 }
 
 const (
-	UniswapV2FactoryAddress   = "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
-	SushiSwapV2FactoryAddress = "0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac"
-	Multicall2Address         = "0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696"
-	SushiSwapFactoryAddress   = "0xC0AEe478e3658e2610c5F7A4A2E1777ce9e4f2Ac"
-	LimitPairs                = 0 //500
+	UniswapV2FactoryAddress = "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
+	Multicall2Address       = "0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696"
+	SushiSwapFactoryAddress = "0xC0AEe478e3658e2610c5F7A4A2E1777ce9e4f2Ac"
 )
 
 var (
@@ -55,8 +55,7 @@ var (
 func main() {
 	ctx := context.Background()
 
-	uniSwapAddress := common.HexToAddress(UniswapV2FactoryAddress)
-	// sushiSwapAddress := common.HexToAddress(SushiSwapFactoryAddress)
+	uniswapAddress := common.HexToAddress(UniswapV2FactoryAddress)
 
 	//$ anvil --fork-url https://eth-mainnet.g.alchemy.com/v2/your-api-key
 	client, err := ethereum.Dial("http://127.0.0.1:8545")
@@ -68,14 +67,14 @@ func main() {
 	blockNumber, _ := client.BlockNumber(ctx)
 	logger.Info("current block number", "block", blockNumber)
 
-	factory, err := factory.NewFactory(uniSwapAddress, client)
+	factoryContract, err := factory.NewFactory(uniswapAddress, client)
 	if err != nil {
 		logger.Error("failed to create factory instance", "error", err)
 		os.Exit(1)
 	}
 
 	opts := &bind.CallOpts{Context: ctx}
-	allPairsLength, err := factory.AllPairsLength(opts)
+	allPairsLength, err := factoryContract.AllPairsLength(opts)
 	if err != nil {
 		logger.Error("failed to get all pairs length", "error", err)
 		os.Exit(1)
@@ -94,14 +93,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	// pairs0, err := collectPairs(ctx, logger, client, factory, LimitPairs)
-	// if err != nil {
-	// 	logger.Error("failed to collect pairs", "error", err)
-	// 	os.Exit(1)
-	// }
-
-	// pairs = append(pairs, pairs0...)
-
 	fileName := "sushiPairs.csv"
 	logger.Info("collected pairs", "count", len(sushiPairs), "writing to file", fileName)
 	if len(sushiPairs) == 0 {
@@ -119,7 +110,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err := writeSushiYAML("sushiswap.yaml", sushiPairs); err != nil {
+	if err := writeSushiYAML("sushiswapv2.yaml", sushiPairs); err != nil {
 		logger.Error("failed to write pairs yaml", "error", err)
 		os.Exit(1)
 	}
@@ -128,17 +119,6 @@ func main() {
 }
 
 func collectUniswapV2Pairs(ctx context.Context, logger *slog.Logger, client bind.ContractBackend) ([]PairInfo, error) {
-	ethClient, ok := client.(*ethclient.Client)
-	if !ok {
-		return nil, fmt.Errorf("multicall requires *ethclient.Client")
-	}
-
-	multicall := ethereum.NewMulticall(ethClient, common.HexToAddress(Multicall2Address))
-	if multicall == nil || multicall.IsZero() {
-		return nil, fmt.Errorf("multicall not configured")
-	}
-
-	// UniswapV2
 	pairs := []string{
 		"0xB4e16d0168e52d35CaCD2c6185b44281Ec28C9Dc", // USDC/ETH
 		"0x0d4a11d5EEaaC28EC3F61d100daF4d40471f1852", // ETH/USDT
@@ -162,32 +142,10 @@ func collectUniswapV2Pairs(ctx context.Context, logger *slog.Logger, client bind
 		"0xC730EF0f4973DA9cC0aB8Ab291890D3e77f58F79",
 	}
 
-	results := make([]PairInfo, 0, len(pairs))
-	for _, pairAddr := range pairs {
-		address := common.HexToAddress(pairAddr)
-		info, err := fetchPairInfoMulticall(ctx, client, multicall, address)
-		if err != nil {
-			logger.Error("failed to collect pair info", "error", err, "pair", pairAddr)
-			continue
-		}
-		results = append(results, *info)
-	}
-
-	return results, nil
+	return collectPairsFromList(ctx, logger, client, pairs)
 }
 
 func collectSushiSwapPairs(ctx context.Context, logger *slog.Logger, client bind.ContractBackend) ([]PairInfo, error) {
-	ethClient, ok := client.(*ethclient.Client)
-	if !ok {
-		return nil, fmt.Errorf("multicall requires *ethclient.Client")
-	}
-
-	multicall := ethereum.NewMulticall(ethClient, common.HexToAddress(Multicall2Address))
-	if multicall == nil || multicall.IsZero() {
-		return nil, fmt.Errorf("multicall not configured")
-	}
-
-	// UniswapV2
 	pairs := []string{
 		"0x06da0fd433c1a5d7a4faa01111c044910a184553", // ETH/USDT
 		"0xc3f279090a47e80990fe3a9c30d24cb117ef91a8",
@@ -211,8 +169,17 @@ func collectSushiSwapPairs(ctx context.Context, logger *slog.Logger, client bind
 		"0xceff51756c56ceffca006cd410b03ffc46dd3a58",
 	}
 
-	results := make([]PairInfo, 0, len(pairs))
-	for _, pairAddr := range pairs {
+	return collectPairsFromList(ctx, logger, client, pairs)
+}
+
+func collectPairsFromList(ctx context.Context, logger *slog.Logger, client bind.ContractBackend, pairAddresses []string) ([]PairInfo, error) {
+	multicall, err := newMulticall(client)
+	if err != nil {
+		return nil, err
+	}
+
+	results := make([]PairInfo, 0, len(pairAddresses))
+	for _, pairAddr := range pairAddresses {
 		address := common.HexToAddress(pairAddr)
 		info, err := fetchPairInfoMulticall(ctx, client, multicall, address)
 		if err != nil {
@@ -223,6 +190,20 @@ func collectSushiSwapPairs(ctx context.Context, logger *slog.Logger, client bind
 	}
 
 	return results, nil
+}
+
+func newMulticall(client bind.ContractBackend) (*ethereum.Multicall, error) {
+	ethClient, ok := client.(*ethclient.Client)
+	if !ok {
+		return nil, fmt.Errorf("multicall requires *ethclient.Client")
+	}
+
+	multicall := ethereum.NewMulticall(ethClient, common.HexToAddress(Multicall2Address))
+	if multicall == nil || multicall.IsZero() {
+		return nil, fmt.Errorf("multicall not configured")
+	}
+
+	return multicall, nil
 }
 
 func collectPairs(ctx context.Context, logger *slog.Logger, client bind.ContractBackend, factoryContract *factory.Factory, limit int) ([]PairInfo, error) {
@@ -598,9 +579,14 @@ func writePairsCSV(path string, pairs []PairInfo) error {
 	}
 
 	for _, info := range pairs {
+		price := info.Price01
+		if price == nil {
+			price = priceToken0InToken1(&info)
+		}
+
 		record := []string{
 			info.Pair,
-			priceToken0InToken1(&info).String(),
+			price.String(),
 			info.PairAddress.Hex(),
 			info.Reserve0.String(),
 			info.Reserve1.String(),
@@ -667,61 +653,31 @@ type YamlDex struct {
 }
 
 func writeUniswapYAML(path string, pairs []PairInfo) error {
-	pairsYAML := make([]YAMLPair, len(pairs))
-	for i, info := range pairs {
-		pairsYAML[i] = YAMLPair{
-			Pair:    info.Pair,
-			Token0:  info.Token0.Hex(),
-			Token1:  info.Token1.Hex(),
-			Address: info.PairAddress.Hex(),
-		}
-	}
-
-	tokensMap := make(map[string]YAMLToken)
-	for _, info := range pairs {
-		if _, exists := tokensMap[info.Token0.Hex()]; !exists {
-			tokensMap[info.Token0.Hex()] = YAMLToken{
-				Symbol:   info.Token0Symbol,
-				Name:     info.Token0Name,
-				Address:  info.Token0.Hex(),
-				Decimals: info.Token0Decimals,
-			}
-		}
-		if _, exists := tokensMap[info.Token1.Hex()]; !exists {
-			tokensMap[info.Token1.Hex()] = YAMLToken{
-				Symbol:   info.Token1Symbol,
-				Name:     info.Token1Name,
-				Address:  info.Token1.Hex(),
-				Decimals: info.Token1Decimals,
-			}
-		}
-	}
-
-	tokensYAML := make([]YAMLToken, 0, len(tokensMap))
-	for _, token := range tokensMap {
-		tokensYAML = append(tokensYAML, token)
-	}
-
-	dex := YamlDex{
-		Name:             "Uniswap V2",
-		FactoryAddress:   UniswapV2FactoryAddress,
-		MulticallAddress: Multicall2Address,
-		Pairs:            pairsYAML,
-		Tokens:           tokensYAML,
-	}
-
-	out, err := yaml.Marshal(&dex)
-	if err != nil {
-		return err
-	}
-
-	if err := os.WriteFile(path, out, 0o644); err != nil {
-		return err
-	}
-	return nil
+	return writeDexYAML(path, "Uniswap V2", UniswapV2FactoryAddress, Multicall2Address, pairs)
 }
 
 func writeSushiYAML(path string, pairs []PairInfo) error {
+	return writeDexYAML(path, "SushiSwap", SushiSwapFactoryAddress, Multicall2Address, pairs)
+}
+
+func writeDexYAML(path, name, factoryAddress, multicallAddress string, pairs []PairInfo) error {
+	dex := YamlDex{
+		Name:             name,
+		FactoryAddress:   factoryAddress,
+		MulticallAddress: multicallAddress,
+		Pairs:            buildPairsYAML(pairs),
+		Tokens:           buildTokensYAML(pairs),
+	}
+
+	out, err := yaml.Marshal(&dex)
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(path, out, 0o644)
+}
+
+func buildPairsYAML(pairs []PairInfo) []YAMLPair {
 	pairsYAML := make([]YAMLPair, len(pairs))
 	for i, info := range pairs {
 		pairsYAML[i] = YAMLPair{
@@ -732,6 +688,14 @@ func writeSushiYAML(path string, pairs []PairInfo) error {
 		}
 	}
 
+	slices.SortFunc(pairsYAML, func(a, b YAMLPair) int {
+		return strings.Compare(a.Pair, b.Pair)
+	})
+
+	return pairsYAML
+}
+
+func buildTokensYAML(pairs []PairInfo) []YAMLToken {
 	tokensMap := make(map[string]YAMLToken)
 	for _, info := range pairs {
 		if _, exists := tokensMap[info.Token0.Hex()]; !exists {
@@ -757,58 +721,9 @@ func writeSushiYAML(path string, pairs []PairInfo) error {
 		tokensYAML = append(tokensYAML, token)
 	}
 
-	dex := YamlDex{
-		Name:             "SushiSwap",
-		FactoryAddress:   SushiSwapFactoryAddress,
-		MulticallAddress: Multicall2Address,
-		Pairs:            pairsYAML,
-		Tokens:           tokensYAML,
-	}
+	slices.SortFunc(tokensYAML, func(a, b YAMLToken) int {
+		return strings.Compare(a.Symbol, b.Symbol)
+	})
 
-	out, err := yaml.Marshal(&dex)
-	if err != nil {
-		return err
-	}
-
-	if err := os.WriteFile(path, out, 0o644); err != nil {
-		return err
-	}
-	return nil
+	return tokensYAML
 }
-
-// func parseFlags(args []string) (string, int, string, error) {
-// 	const (
-// 		defaultLimit    = 5000
-// 		defaultFileName = "pairs.csv"
-// 	)
-
-// 	fs := flag.NewFlagSet("dumps", flag.ContinueOnError)
-// 	fs.SetOutput(os.Stderr)
-
-// 	factoryName := fs.String("factory", "", "Factory name: uniswap or sushiswap (required)")
-// 	factoryShort := fs.String("f", "", "Alias for -factory")
-// 	limit := fs.Uint("limit", defaultLimit, "Max number of pairs to collect")
-// 	fileName := fs.String("out", defaultFileName, "Output CSV file")
-
-// 	if err := fs.Parse(args); err != nil {
-// 		return "", 0, "", err
-// 	}
-
-// 	longValue := strings.TrimSpace(*factoryName)
-// 	shortValue := strings.TrimSpace(*factoryShort)
-// 	if longValue != "" && shortValue != "" && longValue != shortValue {
-// 		fs.PrintDefaults()
-// 		return "", 0, "", fmt.Errorf("-factory and -f must match when both are set")
-// 	}
-
-// 	if longValue == "" {
-// 		longValue = shortValue
-// 	}
-
-// 	if longValue == "" {
-// 		fs.PrintDefaults()
-// 		return "", 0, "", fmt.Errorf("flag -factory is required")
-// 	}
-
-// 	return longValue, int(*limit), strings.TrimSpace(*fileName), nil
-// }
