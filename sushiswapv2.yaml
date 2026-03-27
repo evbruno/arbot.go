@@ -1,0 +1,169 @@
+name: SushiSwap V2
+factory_address: 0xC0AEe478e3658e2610c5F7A4A2E1777ce9e4f2Ac
+multicall_address: 0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696
+pairs:
+    - pair: WETH/USDT
+      address: 0x06da0fd433C1A5d7a4faa01111c044910A184553
+      token0: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+      token1: 0xdAC17F958D2ee523a2206206994597C13D831ec7
+    - pair: WETH/ALCX
+      address: 0xC3f279090a47e80990Fe3a9c30d24Cb117EF91a8
+      token0: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+      token1: 0xdBdb4d16EdA451D0503b854CF79D55697F90c8DF
+    - pair: UMA/WETH
+      address: 0x001b6450083E531A5a7Bf310BD2c1Af4247E23D4
+      token0: 0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828
+      token1: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+    - pair: WETH/CRV
+      address: 0x58Dc5a51fE44589BEb22E8CE67720B5BC5378009
+      token0: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+      token1: 0xD533a949740bb3306d119CC777fa900bA034cd52
+    - pair: USDC/WETH
+      address: 0x397FF1542f962076d0BFE58eA045FfA2d347ACa0
+      token0: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+      token1: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+    - pair: ILV/WETH
+      address: 0x6a091a3406E0073C3CD6340122143009aDac0EDa
+      token0: 0x767FE9EDC9E0dF98E07454847909b5E959D7ca0E
+      token1: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+    - pair: WETH/KNC
+      address: 0xbDC120feF90Fb185A49aD8fa62c7bC0ED0516CC7
+      token0: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+      token1: 0xdeFA4e8a7bcBA345F687a2f1456F5Edd9CE97202
+    - pair: WETH/SUPER
+      address: 0x62CCB80f72CC5C975C5Bc7fb4433D3c336CE5CeB
+      token0: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+      token1: 0xe53EC727dbDEB9E2d5456c3be40cFF031AB40A55
+    - pair: DAI/WETH
+      address: 0xC3D03e4F041Fd4cD388c549Ee2A29a9E5075882f
+      token0: 0x6B175474E89094C44Da98b954EedeAC495271d0F
+      token1: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+    - pair: WETH/AMP
+      address: 0x15e86E6f65EF7EA1dbb72A5E51a07926fB1c82E3
+      token0: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+      token1: 0xfF20817765cB7f73d4bde2e66e067E58D11095C2
+    - pair: SUSHI/WETH
+      address: 0x795065dCc9f64b5614C407a6EFDC400DA6221FB0
+      token0: 0x6B3595068778DD592e39A122f4f5a5cF09C90fE2
+      token1: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+    - pair: YGG/WETH
+      address: 0x99B42F2B49C395D2a77D973f6009aBb5d67dA343
+      token0: 0x25f8087EAD173b73D6e8B84329989A8eEA16CF73
+      token1: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+    - pair: SYN/WETH
+      address: 0x4A86C01d67965f8cB3d0AAA2c655705E64097C31
+      token0: 0x0f2D719407FdBeFF09D87557AbB7232601FD9F29
+      token1: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+    - pair: DYDX/WETH
+      address: 0xE4eBD836832F1a8A81641111A5b081a2f90B9430
+      token0: 0x92D6C1e31e14520e676a687F0a93788B716BEff5
+      token1: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+    - pair: CVX/WETH
+      address: 0x05767d9EF41dC40689678fFca0608878fb3dE906
+      token0: 0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B
+      token1: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+    - pair: REN/WETH
+      address: 0x611CDe65deA90918c0078ac0400A72B0D25B9bb1
+      token0: 0x408e41876cCCDC0F92210600ef50372656052a38
+      token1: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+    - pair: FRAX/WETH
+      address: 0xeC8C342bc3E07F05B9a782bc34e7f04fB9B44502
+      token0: 0x853d955aCEf822Db058eb8505911ED77F175b99e
+      token1: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+    - pair: AXS/WETH
+      address: 0x0C365789DbBb94A29F8720dc465554c587e897dB
+      token0: 0xBB0E17EF65F82Ab018d8EDd776e8DD940327B28b
+      token1: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+    - pair: FTX Token/WETH
+      address: 0x7825dE5586E4d2FD04459091bbe783fa243E1bf3
+      token0: 0x50D1c9771902476076eCFc8B2A83Ad6b9355a4c9
+      token1: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+    - pair: WBTC/WETH
+      address: 0xCEfF51756c56CeFFCA006cD410B03FFC46dd3a58
+      token0: 0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599
+      token1: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+tokens:
+    - symbol: DAI
+      name: Dai Stablecoin
+      address: 0x6B175474E89094C44Da98b954EedeAC495271d0F
+      decimals: 18
+    - symbol: SUSHI
+      name: SushiToken
+      address: 0x6B3595068778DD592e39A122f4f5a5cF09C90fE2
+      decimals: 18
+    - symbol: CVX
+      name: Convex Token
+      address: 0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B
+      decimals: 18
+    - symbol: REN
+      name: Republic Token
+      address: 0x408e41876cCCDC0F92210600ef50372656052a38
+      decimals: 18
+    - symbol: FTX Token
+      name: FTT
+      address: 0x50D1c9771902476076eCFc8B2A83Ad6b9355a4c9
+      decimals: 18
+    - symbol: USDT
+      name: Tether USD
+      address: 0xdAC17F958D2ee523a2206206994597C13D831ec7
+      decimals: 6
+    - symbol: ALCX
+      name: Alchemix
+      address: 0xdBdb4d16EdA451D0503b854CF79D55697F90c8DF
+      decimals: 18
+    - symbol: AMP
+      name: Amp
+      address: 0xfF20817765cB7f73d4bde2e66e067E58D11095C2
+      decimals: 18
+    - symbol: FRAX
+      name: Frax
+      address: 0x853d955aCEf822Db058eb8505911ED77F175b99e
+      decimals: 18
+    - symbol: AXS
+      name: Axie Infinity Shard
+      address: 0xBB0E17EF65F82Ab018d8EDd776e8DD940327B28b
+      decimals: 18
+    - symbol: SYN
+      name: Synapse
+      address: 0x0f2D719407FdBeFF09D87557AbB7232601FD9F29
+      decimals: 18
+    - symbol: WETH
+      name: Wrapped Ether
+      address: 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+      decimals: 18
+    - symbol: UMA
+      name: UMA Voting Token v1
+      address: 0x04Fa0d235C4abf4BcF4787aF4CF447DE572eF828
+      decimals: 18
+    - symbol: USDC
+      name: USD Coin
+      address: 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+      decimals: 6
+    - symbol: KNC
+      name: Kyber Network Crystal v2
+      address: 0xdeFA4e8a7bcBA345F687a2f1456F5Edd9CE97202
+      decimals: 18
+    - symbol: SUPER
+      name: SuperFarm
+      address: 0xe53EC727dbDEB9E2d5456c3be40cFF031AB40A55
+      decimals: 18
+    - symbol: YGG
+      name: Yield Guild Games Token
+      address: 0x25f8087EAD173b73D6e8B84329989A8eEA16CF73
+      decimals: 18
+    - symbol: CRV
+      name: Curve DAO Token
+      address: 0xD533a949740bb3306d119CC777fa900bA034cd52
+      decimals: 18
+    - symbol: ILV
+      name: Illuvium
+      address: 0x767FE9EDC9E0dF98E07454847909b5E959D7ca0E
+      decimals: 18
+    - symbol: DYDX
+      name: dYdX
+      address: 0x92D6C1e31e14520e676a687F0a93788B716BEff5
+      decimals: 18
+    - symbol: WBTC
+      name: Wrapped BTC
+      address: 0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599
+      decimals: 8

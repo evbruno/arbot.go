@@ -31,7 +31,7 @@ var (
 
 // FactoryMetaData contains all meta data concerning the Factory contract.
 var FactoryMetaData = &bind.MetaData{
-	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenA\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"tokenB\",\"type\":\"address\"}],\"name\":\"getPair\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
+	ABI: "[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenA\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"tokenB\",\"type\":\"address\"}],\"name\":\"getPair\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"allPairsLength\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"allPairs\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}]",
 }
 
 // FactoryABI is the input ABI used to generate the binding from.
@@ -178,6 +178,68 @@ func (_Factory *FactoryTransactorRaw) Transfer(opts *bind.TransactOpts) (*types.
 // Transact invokes the (paid) contract method with params as input values.
 func (_Factory *FactoryTransactorRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
 	return _Factory.Contract.contract.Transact(opts, method, params...)
+}
+
+// AllPairs is a free data retrieval call binding the contract method 0x1e3dd18b.
+//
+// Solidity: function allPairs(uint256 ) view returns(address)
+func (_Factory *FactoryCaller) AllPairs(opts *bind.CallOpts, arg0 *big.Int) (common.Address, error) {
+	var out []interface{}
+	err := _Factory.contract.Call(opts, &out, "allPairs", arg0)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
+}
+
+// AllPairs is a free data retrieval call binding the contract method 0x1e3dd18b.
+//
+// Solidity: function allPairs(uint256 ) view returns(address)
+func (_Factory *FactorySession) AllPairs(arg0 *big.Int) (common.Address, error) {
+	return _Factory.Contract.AllPairs(&_Factory.CallOpts, arg0)
+}
+
+// AllPairs is a free data retrieval call binding the contract method 0x1e3dd18b.
+//
+// Solidity: function allPairs(uint256 ) view returns(address)
+func (_Factory *FactoryCallerSession) AllPairs(arg0 *big.Int) (common.Address, error) {
+	return _Factory.Contract.AllPairs(&_Factory.CallOpts, arg0)
+}
+
+// AllPairsLength is a free data retrieval call binding the contract method 0x574f2ba3.
+//
+// Solidity: function allPairsLength() view returns(uint256)
+func (_Factory *FactoryCaller) AllPairsLength(opts *bind.CallOpts) (*big.Int, error) {
+	var out []interface{}
+	err := _Factory.contract.Call(opts, &out, "allPairsLength")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
+}
+
+// AllPairsLength is a free data retrieval call binding the contract method 0x574f2ba3.
+//
+// Solidity: function allPairsLength() view returns(uint256)
+func (_Factory *FactorySession) AllPairsLength() (*big.Int, error) {
+	return _Factory.Contract.AllPairsLength(&_Factory.CallOpts)
+}
+
+// AllPairsLength is a free data retrieval call binding the contract method 0x574f2ba3.
+//
+// Solidity: function allPairsLength() view returns(uint256)
+func (_Factory *FactoryCallerSession) AllPairsLength() (*big.Int, error) {
+	return _Factory.Contract.AllPairsLength(&_Factory.CallOpts)
 }
 
 // GetPair is a free data retrieval call binding the contract method 0xe6a43905.
